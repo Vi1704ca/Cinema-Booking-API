@@ -1,0 +1,340 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.MovieSession",
+    "label": "Create table \"MovieSession\"",
+    "summary": "Creates table \"MovieSession\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "MovieSession"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"MovieSession\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSession\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"MovieSession\"",
+        "sql": "CREATE TABLE \"public\".\"MovieSession\" (\n  \"id\" SERIAL NOT NULL,\n  \"movieTitle\" text NOT NULL,\n  \"startsAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"MovieSession\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSession\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.MovieSessionSeat",
+    "label": "Create table \"MovieSessionSeat\"",
+    "summary": "Creates table \"MovieSessionSeat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "MovieSessionSeat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"MovieSessionSeat\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"MovieSessionSeat\"",
+        "sql": "CREATE TABLE \"public\".\"MovieSessionSeat\" (\n  \"MovieSessionId\" int4 NOT NULL,\n  \"SeatId\" int4 NOT NULL,\n  PRIMARY KEY (\"MovieSessionId\", \"SeatId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"MovieSessionSeat\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Seat",
+    "label": "Create table \"Seat\"",
+    "summary": "Creates table \"Seat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Seat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Seat\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Seat\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Seat\"",
+        "sql": "CREATE TABLE \"public\".\"Seat\" (\n  \"id\" SERIAL NOT NULL,\n  \"number\" int4 NOT NULL,\n  \"row\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Seat\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Seat\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.MovieSession.MovieSession_movieTitle_key",
+    "label": "Add unique constraint on \"MovieSession\" (movieTitle)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "MovieSession_movieTitle_key",
+        "table": "MovieSession"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"MovieSession_movieTitle_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSession_movieTitle_key",
+          "public",
+          "\"public\".\"MovieSession\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"MovieSession_movieTitle_key\"",
+        "sql": "ALTER TABLE \"public\".\"MovieSession\" ADD CONSTRAINT \"MovieSession_movieTitle_key\" UNIQUE (\"movieTitle\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"MovieSession_movieTitle_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSession_movieTitle_key",
+          "public",
+          "\"public\".\"MovieSession\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.MovieSessionSeat.MovieSessionSeat_MovieSessionId_idx_fefd5081",
+    "label": "Create index \"MovieSessionSeat_MovieSessionId_idx_fefd5081\" on \"MovieSessionSeat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "MovieSessionSeat_MovieSessionId_idx_fefd5081",
+        "table": "MovieSessionSeat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"MovieSessionSeat_MovieSessionId_idx_fefd5081\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat_MovieSessionId_idx_fefd5081\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"MovieSessionSeat_MovieSessionId_idx_fefd5081\"",
+        "sql": "CREATE INDEX \"MovieSessionSeat_MovieSessionId_idx_fefd5081\" ON \"public\".\"MovieSessionSeat\" (\"MovieSessionId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"MovieSessionSeat_MovieSessionId_idx_fefd5081\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat_MovieSessionId_idx_fefd5081\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.MovieSessionSeat.MovieSessionSeat_SeatId_idx_66fcb29e",
+    "label": "Create index \"MovieSessionSeat_SeatId_idx_66fcb29e\" on \"MovieSessionSeat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "MovieSessionSeat_SeatId_idx_66fcb29e",
+        "table": "MovieSessionSeat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"MovieSessionSeat_SeatId_idx_66fcb29e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat_SeatId_idx_66fcb29e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"MovieSessionSeat_SeatId_idx_66fcb29e\"",
+        "sql": "CREATE INDEX \"MovieSessionSeat_SeatId_idx_66fcb29e\" ON \"public\".\"MovieSessionSeat\" (\"SeatId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"MovieSessionSeat_SeatId_idx_66fcb29e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MovieSessionSeat_SeatId_idx_66fcb29e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.MovieSessionSeat.MovieSessionSeat_SeatId_fkey",
+    "label": "Add foreign key \"MovieSessionSeat_SeatId_fkey\" on \"MovieSessionSeat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "MovieSessionSeat_SeatId_fkey",
+        "table": "MovieSessionSeat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"MovieSessionSeat_SeatId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSessionSeat_SeatId_fkey",
+          "public",
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"MovieSessionSeat_SeatId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"MovieSessionSeat\"\nADD CONSTRAINT \"MovieSessionSeat_SeatId_fkey\"\nFOREIGN KEY (\"SeatId\")\nREFERENCES \"public\".\"Seat\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"MovieSessionSeat_SeatId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSessionSeat_SeatId_fkey",
+          "public",
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.MovieSessionSeat.MovieSessionSeat_MovieSessionId_fkey",
+    "label": "Add foreign key \"MovieSessionSeat_MovieSessionId_fkey\" on \"MovieSessionSeat\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "MovieSessionSeat_MovieSessionId_fkey",
+        "table": "MovieSessionSeat"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"MovieSessionSeat_MovieSessionId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSessionSeat_MovieSessionId_fkey",
+          "public",
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"MovieSessionSeat_MovieSessionId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"MovieSessionSeat\"\nADD CONSTRAINT \"MovieSessionSeat_MovieSessionId_fkey\"\nFOREIGN KEY (\"MovieSessionId\")\nREFERENCES \"public\".\"MovieSession\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"MovieSessionSeat_MovieSessionId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "MovieSessionSeat_MovieSessionId_fkey",
+          "public",
+          "\"public\".\"MovieSessionSeat\""
+        ]
+      }
+    ]
+  }
+]

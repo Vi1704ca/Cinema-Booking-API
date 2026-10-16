@@ -1,0 +1,24 @@
+{
+  "name": "cinemabookingapi",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "contract:emit": "prisma contract emit",
+    "start": "npx tsx src/app.ts",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "dependencies": {
+    "@prisma/orm-postgres": "^8.0.0-rc.18",
+    "@types/express": "^5.0.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "prisma": "8.0.0-rc.23"
+  }
+}
