@@ -1,5 +1,5 @@
-import type { MovieSession, Seat } from "../domain/cinema/entity";
-import type { CinemaRepository } from "../domain/cinema/repository";
+import type { MovieSession } from "../domain/cinema/entity";
+import type { CinemaRepository, BookedSeat } from "../domain/cinema/repository";
 import { isStructuredError } from "@prisma/orm-postgres/utils";
 import { db } from '../prisma/db.js';
 
@@ -16,8 +16,20 @@ export function createCinemaRepository(db: DatabaseType): CinemaRepository {
             return session;
         },  
         async getBookedSeats(sessionId){
-           const session : MovieSession|null = await db.orm.public.MovieSession.include("seats", (seat) => seat.select("id", "row", "number")).first({ id: sessionId });
-           return session;
+           const session : MovieSession|null = await db.orm.public.MovieSession.include("seats", (seat) => seat.select("id", "row", "number").orderBy((seat) => seat.id.asc())).first({ id: sessionId });
+           const seatIds : number[] = (await db.orm.public.Seat.select("id").all()).map(seat => seat.id);
+           const seats : BookedSeat[]|null = session?.seats.map( seat => {
+                let booked: boolean = false;  
+                if (seatIds.includes(seat.id)){
+                    booked = true;
+                }
+                return {
+                    ...seat,
+                    booked: booked
+                }
+            }) ?? null;
+
+            return seats;
         },
         async bookSeat(seatId, sessionId){
             try{

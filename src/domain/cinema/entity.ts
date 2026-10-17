@@ -12,5 +12,5 @@ export interface Seat{
     movieSessions: noRelationMovieSession[]
 }
 
-type noRelationSeat = Omit<Seat, "movieSessions">;
+export type noRelationSeat = Omit<Seat, "movieSessions">;
 type noRelationMovieSession = Omit<MovieSession, "seats">;
