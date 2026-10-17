@@ -18,7 +18,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'ca49a291ee11f4629011b0a04880c1413a03ef5b16b3f977ad65185b5876797d'>;
+  StorageHashBase<'2d45a31319df5a12134c34038f2b193cc7560db5e28711ac263bee1c511a930a'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
@@ -236,7 +236,7 @@ export type FieldOutputTypes = {
     readonly MovieSession: {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly movieTitle: CodecTypes['pg/text@1']['output'];
-      readonly startsAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly startsAt: CodecTypes['pg/timestamptz-date@1']['output'];
     };
     readonly MovieSessionSeat: {
       readonly MovieSessionId: CodecTypes['pg/int4@1']['output'];
@@ -254,7 +254,7 @@ export type FieldInputTypes = {
     readonly MovieSession: {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly movieTitle: CodecTypes['pg/text@1']['input'];
-      readonly startsAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly startsAt: CodecTypes['pg/timestamptz-date@1']['input'];
     };
     readonly MovieSessionSeat: {
       readonly MovieSessionId: CodecTypes['pg/int4@1']['input'];
@@ -272,7 +272,7 @@ export type StorageColumnTypes = {
     readonly MovieSession: {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly movieTitle: CodecTypes['pg/text@1']['output'];
-      readonly startsAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly startsAt: CodecTypes['pg/timestamptz-date@1']['output'];
     };
     readonly MovieSessionSeat: {
       readonly MovieSessionId: CodecTypes['pg/int4@1']['output'];
@@ -290,7 +290,7 @@ export type StorageColumnInputTypes = {
     readonly MovieSession: {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly movieTitle: CodecTypes['pg/text@1']['input'];
-      readonly startsAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly startsAt: CodecTypes['pg/timestamptz-date@1']['input'];
     };
     readonly MovieSessionSeat: {
       readonly MovieSessionId: CodecTypes['pg/int4@1']['input'];
@@ -308,7 +308,7 @@ export namespace Models {
   export type public_MovieSession = {
     id: CodecTypes['pg/int4@1']['output'];
     movieTitle: CodecTypes['pg/text@1']['output'];
-    startsAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    startsAt: CodecTypes['pg/timestamptz-date@1']['output'];
     seats: public_Seat[];
     readonly [RelationKeys]?: 'seats';
   };
@@ -374,7 +374,7 @@ type ContractBase = Omit<
                 };
                 readonly startsAt: {
                   readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -511,7 +511,7 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly codecId: 'pg/timestamptz-date@1';
                 };
               };
             };
