@@ -2,7 +2,7 @@
 model MovieSession {
   id         Int      @id @default(autoincrement())
   movieTitle String   @unique
-  startsAt   DateTime
+  startsAt   TimestamptzJsDate 
   seats      Seat[]
 }
 

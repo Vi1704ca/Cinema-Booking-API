@@ -40,7 +40,7 @@
               "startsAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "kind": "scalar"
                 }
               }
@@ -251,7 +251,7 @@
                   "nullable": false
                 },
                 "startsAt": {
-                  "codecId": "pg/timestamptz-temporal@1",
+                  "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "nullable": false
                 }
@@ -387,7 +387,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "ca49a291ee11f4629011b0a04880c1413a03ef5b16b3f977ad65185b5876797d"
+    "storageHash": "2d45a31319df5a12134c34038f2b193cc7560db5e28711ac263bee1c511a930a"
   },
   "capabilities": {
     "postgres": {
