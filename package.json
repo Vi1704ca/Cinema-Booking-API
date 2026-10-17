@@ -19,6 +19,16 @@
     "typescript": "^7.0.2"
   },
   "devDependencies": {
-    "prisma": "8.0.0-rc.23"
-  }
+    "prisma": "^8.0.0-rc.23"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vi1704ca/Cinema-Booking-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vi1704ca/Cinema-Booking-API/issues"
+  },
+  "homepage": "https://github.com/Vi1704ca/Cinema-Booking-API#readme"
 }
