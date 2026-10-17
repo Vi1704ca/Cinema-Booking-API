@@ -1,18 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
-import { CinemaService } from '../../../services/cinema/cinema.service';
+import type { Request, Response } from 'express';
+import type { CinemaService } from '../../../services/cinema/cinema.types.js';
+import { validate } from '../../dto/request.js';
 
 export function handleCinemaError(error: unknown, res: Response): void {
   if (error instanceof Error) {
     switch (error.message) {
-      case 'CINEMA_NOT_FOUND':
-        res.status(404).json({ error: 'Cinema not found' });
+      case 'SEAT_ALREADY_RESERVED':
+        res.status(409).json({ error: 'Seat is already reserved' });
         return;
-      case 'INVALID_CINEMA_DATA':
-      case 'VALIDATION_ERROR':
-        res.status(400).json({ error: error.message });
-        return;
-      case 'CINEMA_ALREADY_EXISTS':
-        res.status(409).json({ error: 'Cinema already exists' });
+      case 'SESSION_OR_SEAT_NOT_FOUND':
+        res.status(404).json({ error: 'Session or seat not found' });
         return;
       default:
         break;
@@ -26,48 +23,74 @@ export function handleCinemaError(error: unknown, res: Response): void {
 export class CinemaHandler {
   constructor(private cinemaService: CinemaService) {}
 
-  getCinemas = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getSessions = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const cinemas = await this.cinemaService.getAllCinemas();
-      res.status(200).json(cinemas);
+      const sessions = await this.cinemaService.getAllSessions();
+      res.status(200).json(sessions);
     } catch (error) {
       handleCinemaError(error, res);
     }
   };
 
-  getCinemaById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getSessionById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      const cinema = await this.cinemaService.getCinemaById(id);
-      
-      if (!cinema) {
-        res.status(404).json({ error: 'Cinema not found' });
+      const idParam = req.params['id'];
+      const id = typeof idParam === 'string' ? Number(idParam) : Number.NaN;
+      if (!Number.isSafeInteger(id) || id <= 0) {
+        res.status(400).json({ error: 'Invalid session id' });
         return;
       }
 
-      res.status(200).json(cinema);
+      const session = await this.cinemaService.getSessionById(id);
+      if (!session) {
+        res.status(404).json({ error: 'Session not found' });
+        return;
+      }
+
+      res.status(200).json(session);
     } catch (error) {
       handleCinemaError(error, res);
     }
   };
 
-  createCinema = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getSessionSeats = async (req: Request, res: Response): Promise<void> => {
     try {
-      const cinemaData = req.body;
-      const newCinema = await this.cinemaService.createCinema(cinemaData);
-      
-      res.status(201).json(newCinema);
+      const idParam = req.params['id'];
+      const id = typeof idParam === 'string' ? Number(idParam) : Number.NaN;
+      if (!Number.isSafeInteger(id) || id <= 0) {
+        res.status(400).json({ error: 'Invalid session id' });
+        return;
+      }
+
+      const seats = await this.cinemaService.getSessionSeats(id);
+      if (!seats) {
+        res.status(404).json({ error: 'Session not found' });
+        return;
+      }
+
+      res.status(200).json(seats);
     } catch (error) {
       handleCinemaError(error, res);
     }
   };
 
-  deleteCinema = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  bookSeat = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      await this.cinemaService.deleteCinema(id);
-      
-      res.status(204).send();
+      const booking = validate(req.params['id'], req.body?.seatId);
+      if (!booking) {
+        res.status(400).json({ error: 'A positive integer seatId is required' });
+        return;
+      }
+
+      const result = await this.cinemaService.bookSeat(booking.sessionId, booking.seatId);
+      if (!result.success) {
+        res.status(result.status).json({
+          error: result.status === 409 ? 'Seat is already reserved' : 'Session or seat not found',
+        });
+        return;
+      }
+
+      res.status(result.status).json({ success: true });
     } catch (error) {
       handleCinemaError(error, res);
     }

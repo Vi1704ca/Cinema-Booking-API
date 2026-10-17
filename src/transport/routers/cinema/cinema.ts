@@ -1,17 +1,15 @@
 import { Router } from 'express';
 import { CinemaHandler } from '../../handlers/cinema/cinema';
-import { CinemaService } from '../../../services/cinema/cinema.service';
+import type { CinemaService } from '../../../services/cinema/cinema.types.js';
 
-export function createCinemaRouter(): Router {
+export function createCinemaRouter(cinemaService: CinemaService): Router {
   const router = Router();
-
-  const cinemaService = new CinemaService();
   const cinemaHandler = new CinemaHandler(cinemaService);
 
-  router.get('/', cinemaHandler.getCinemas);
-  router.get('/:id', cinemaHandler.getCinemaById);
-  router.post('/', cinemaHandler.createCinema);
-  router.delete('/:id', cinemaHandler.deleteCinema);
+  router.get('/', cinemaHandler.getSessions);
+  router.get('/:id', cinemaHandler.getSessionById);
+  router.get('/:id/seats', cinemaHandler.getSessionSeats);
+  router.post('/:id/book', cinemaHandler.bookSeat);
 
   return router;
 }
